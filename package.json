@@ -6,6 +6,7 @@
   "repository": "https://github.com/erosson/assert-fp",
   "author": "Evan",
   "license": "MIT",
+  "private": false,
   "scripts": {
     "test": "jest"
   },
