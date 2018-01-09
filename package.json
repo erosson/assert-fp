@@ -1,0 +1,15 @@
+{
+  "name": "@erosson/assert-fp",
+  "version": "1.0.0",
+  "description": "Assert and throws expressions. Useful for functional programming.",
+  "main": "src/index.js",
+  "repository": "https://github.com/erosson/assert-fp",
+  "author": "Evan <github@erosson.org>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^22.0.5"
+  }
+}

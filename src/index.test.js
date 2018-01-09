@@ -1,0 +1,62 @@
+const Assert = require('./index')
+const throws = Assert.throws
+
+describe('assert-fp', () => {
+  it('throws', () => {
+    expect(() => throws('message123')).toThrow('message123')
+    // https://stackoverflow.com/questions/6711971/regular-expressions-match-anything
+    expect(() => throws('message123', 456)).toThrow(/message123[^]+456/)
+    expect(() => throws('message123', 456, 789)).toThrow(/message123[^]+456[^]+789/)
+    expect(() => throws()).toThrow()
+  })
+  it('assert', () => {
+    expect(Assert.ok).toBe(Assert)
+    expect(Assert.assert).toBe(Assert)
+    expect(Assert(123, "message123")).toBe(123)
+    expect(Assert.ok(123, "message123")).toBe(123)
+    expect(Assert.assert(123, "message123")).toBe(123)
+    expect(Assert(true, "message123")).toBe(true)
+    expect(() => Assert(false, "message123")).toThrow('message123')
+    expect(() => Assert(0, "message123")).toThrow('message123')
+    expect(() => Assert(null, "message123")).toThrow('message123')
+    expect(() => Assert(undefined, "message123")).toThrow('message123')
+    expect(() => Assert(false, "message123", 456)).toThrow(/message123[^]+456/)
+  })
+  it('assert.isDefined', () => {
+    expect(Assert.isDefined(123, "message123")).toBe(123)
+    expect(Assert.isDefined(true, "message123")).toBe(true)
+    expect(Assert.isDefined(false, "message123")).toBe(false)
+    expect(Assert.isDefined(0, "message123")).toBe(0)
+    expect(() => Assert.isDefined(null, "message123")).toThrow(/message123[^]+null/)
+    expect(() => Assert.isDefined(undefined, "message123")).toThrow(/message123[^]+null/) // unfortunate. json.stringify's fault :(
+    expect(() => Assert.isDefined(null, "message123", 456)).toThrow(/message123[^]+null[^]+456/)
+  })
+  it('assert.isNumber', () => {
+    expect(Assert.isNumber(3, "message123")).toBe(3)
+    expect(Assert.isNumber(0, "message123")).toBe(0)
+    expect(Assert.isNumber(-3, "message123")).toBe(-3)
+    expect(Assert.isNumber(Infinity, "message123")).toBe(Infinity)
+    expect(Assert.isNumber(-Infinity, "message123")).toBe(-Infinity)
+    expect(() => Assert.isNumber(null, "message123")).toThrow('message123')
+    expect(() => Assert.isNumber(undefined, "message123")).toThrow('message123')
+    expect(() => Assert.isNumber('three', "message123")).toThrow('message123')
+    expect(() => Assert.isNumber('3', "message123")).toThrow('message123')
+    expect(() => Assert.isNumber(NaN, "message123")).toThrow('message123')
+    expect(() => Assert.isNumber([], "message123")).toThrow('message123')
+    expect(() => Assert.isNumber({}, "message123")).toThrow('message123')
+  })
+  it('custom assertion fn, without message', () => {
+    var a = Assert.create(function(val) { return val === 123 })
+    expect(a(123, 'message123')).toBe(123)
+    expect(a(123)).toBe(123)
+    expect(() => a(124, "message123")).toThrow(/message123[^]+124/)
+    expect(() => a(124, "message123", 125)).toThrow(/message123[^]+124[^]+125/)
+    expect(() => a(124)).toThrow(/124/)
+  })
+  it('custom assertion fn, with message', () => {
+    var a = Assert.create(function(val) { return val === 123 }, "message123")
+    expect(a(123)).toBe(123)
+    expect(() => a(124)).toThrow(/message123[^]+124/)
+    expect(() => a(124, 125)).toThrow(/message123[^]+124[^]+125/)
+  })
+})
